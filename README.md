@@ -16,81 +16,74 @@ WSL allows you to run a Linux distribution alongside your Windows installation. 
 
 3. After rebooting, **install a Linux distribution** from the Microsoft Store (e.g., Ubuntu).
 
+## Prerequisites
+
+1. **WSL Installed**: Ensure that WSL is installed and a Linux distribution (e.g., Ubuntu) is set up on your system.
+2. **Clone the Repository**: Clone this repository to your local machine.
+
+```bash
+git clone https://github.com/your-username/pomodoro-wsl.git
+cd pomodoro-wsl
+```
+
 ## Set Up the Environment in WSL
 
-1. **Open your newly installed Linux distribution** from the Start menu.
+1. **Open your newly installed Linux distribution** 
+from the Start menu.
 
-2. **Update the package lists:**
 
-    ```bash
-    sudo apt update
-    sudo apt upgrade
-    ```
-
-3. **Install the necessary packages (`espeak` and `lolcat`)**. Note that `timer` might not be available in the default repositories, so you might need to build it from source or use an alternative:
+2. **Step 2: Install Necessary Packages**
+Install the required packages (`espeak`, `lolcat`, `golang`, `spd-say`, and `notify-send`).
 
     ```bash
-    sudo apt install espeak
-    sudo apt install lolcat
-    ```
+    sudo apt update && sudo apt upgrade -y
+    sudo apt install espeak lolcat golang spd-say libnotify-bin -y
 
-4. **Install `timer` from source** (you may need to install `go` to build it):
-
-    ```bash
-    sudo apt install golang
+    # Install timer from source
     git clone https://github.com/caarlos0/timer.git
     cd timer
     go build
     sudo mv timer /usr/local/bin/timer
+    cd ..
+    rm -rf timer
     ```
 
-## Create and Run Your Script
+## Usage
+**Source the Script** : 
+Source the script to load the aliases and functions.
 
-1. **Save the provided script to a file**, e.g., `pomodoro.sh`:
 
-    ```bash
-    nano pomodoro.sh
-    ```
+**Make the script executable:**
 
-2. **Paste the script content into `pomodoro.sh`:**
+```bash
+# Navigate to the directory where pomodoro.sh is saved
+cd /path/to/your/script
+chmod +x pomodoro.sh
+```
 
-    ```bash
-    #!/bin/bash
-    
-    declare -A pomo_options
-    pomo_options["work"]="45"
-    pomo_options["break"]="10"
-    
-    pomodoro () {
-      if [ -n "$1" -a -n "${pomo_options["$1"]}" ]; then
-      val=$1
-      echo $val | lolcat
-      timer ${pomo_options["$val"]}m
-      spd-say "'$val' session done"
-      fi
-    }
-    
-    alias wo="pomodoro 'work'"
-    alias br="pomodoro 'break'"
-    ```
+ **Source the script to use the aliases:**
 
-3. **Make the script executable:**
+```bash
+source pomodoro.sh
+```
+### Using the Pomodoro Script
+You can now use the following commands:
 
-    ```bash
-    chmod +x pomodoro.sh
-    ```
+### Start Pomodoro with a specified number of loops (default is 2 loops):
 
-4. **Source the script to use the aliases:**
-
-    ```bash
-    source pomodoro.sh
-    ```
-
+```bash
+doro 3  # Start with 3 loops of work and break sessions
+doro    # Start with the default number of loops (2 loops)
 ## Run the Aliases
-
+```
+### Change work or break time:
+```bash 
+cp work 50  # Change work time to 50 minutes
+cp break 15  # Change break time to 15 minutes
+```
 Now you can run the aliases `wo` and `br` from your terminal:
 
 ```bash
-wo
-br
+wo  # Start a work session
+br  # Start a break session
 ```
